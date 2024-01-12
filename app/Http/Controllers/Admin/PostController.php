@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers;//se non messo = errori
 
 use App\Models\Post;
 use App\Http\Requests\StorePostRequest;
@@ -14,7 +15,8 @@ class PostController extends Controller
      */
     public function index()
     {
-        //
+        $posts = Post::all();
+        return view('admin.post.index', compact('posts'));
     }
 
     /**
