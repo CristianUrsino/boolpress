@@ -4,6 +4,8 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
+use Illuminate\Validation\Rule; //importa Rule 
+
 class StorePostRequest extends FormRequest
 {
     /**
@@ -11,7 +13,7 @@ class StorePostRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +24,19 @@ class StorePostRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'title'=>['required', 'min:3', 'max:200', 'unique:posts', Rule::unique('posts')->ignore($this->post)],
+            'body'=>['nullable'],
+            'image'=>['nullable','image']
+        ];
+    }
+
+    public function messages(){
+        return [
+            'title.required' => 'titolo obbligatorio',
+            'title.min' => 'titolo :min caratteri',
+            'title.max' => 'titolo :max caratteri',
+            'title.unique' => ' titolo già esistente',
+            'image.url' => 'L\'immagine deve essere url',
         ];
     }
 }

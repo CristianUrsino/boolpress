@@ -1,12 +1,17 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers;//se non messo = errori
 
+use App\Http\Controllers\Controller;
 use App\Models\Post;
 use App\Http\Requests\StorePostRequest;
 use App\Http\Requests\UpdatePostRequest;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
+
+use Illuminate\Support\Facades\Storage;
+
 
 class PostController extends Controller
 {
@@ -16,7 +21,7 @@ class PostController extends Controller
     public function index()
     {
         $posts = Post::all();
-        return view('admin.post.index', compact('posts'));
+        return view('admin.posts.index', compact('posts'));
     }
 
     /**
@@ -24,7 +29,7 @@ class PostController extends Controller
      */
     public function create()
     {
-        //
+        return view('admin.posts.create');
     }
 
     /**
@@ -32,7 +37,17 @@ class PostController extends Controller
      */
     public function store(StorePostRequest $request)
     {
-        //
+        $formData = $request->validated();
+        
+        $img_path = Storage::put('image', $formData['image']);
+        $formData['image'] = $img_path;
+
+        $slug = Str::slug($formData['title'], '-');
+        $formData['slug'] = $slug;
+        $userId = Auth::id();
+        $formData['user_id'] = $userId;
+        $post = Post::create($formData);
+        return redirect()->route('admin.posts.show', $post->id);
     }
 
     /**
@@ -40,7 +55,7 @@ class PostController extends Controller
      */
     public function show(Post $post)
     {
-        //
+        return view('admin.posts.show',compact('post'));
     }
 
     /**
@@ -48,7 +63,7 @@ class PostController extends Controller
      */
     public function edit(Post $post)
     {
-        //
+        return view('admin.posts.edit', compact('post'));
     }
 
     /**
@@ -56,7 +71,13 @@ class PostController extends Controller
      */
     public function update(UpdatePostRequest $request, Post $post)
     {
-        //
+        $formData = $request->validated();
+        $slug= Str::slug($formData['title'],'-');
+        $formData['slug'] = $slug;
+        $userId = Auth::id;
+        $formData['user_id'] = $slug;
+        $post->update();
+        return redirect()->route('admin.posts.show');
     }
 
     /**
@@ -64,6 +85,7 @@ class PostController extends Controller
      */
     public function destroy(Post $post)
     {
-        //
+        $post->delite();
+        return to_route('admin.posts.index')->with('message',"$post->title eliminato");
     }
 }
