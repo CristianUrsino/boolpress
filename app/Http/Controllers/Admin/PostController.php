@@ -10,7 +10,7 @@ use App\Http\Requests\UpdatePostRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Storage;//PER INSERIRE IMG
 
 
 class PostController extends Controller
@@ -38,10 +38,16 @@ class PostController extends Controller
     public function store(StorePostRequest $request)
     {
         $formData = $request->validated();
-        
-        $img_path = Storage::put('image', $formData['image']);
-        $formData['image'] = $img_path;
-
+        //PER INSERIRE IMG
+        if($request->hasfile('image')){
+            $img_path = Storage::put('image', $formData['image']);
+            $formData['image'] = $img_path;
+        }
+        // ALTRI PASSAGGI:
+        // 1, su config/filesistem, cambiare default con valore da 'local' a 'public
+        // 2, su .env, cambiare filesistem_disk = 'public', (riga 20)
+        // 3, php artisan storege:link
+        // 4, aggiungere use Illuminate\Support\Facades\Storage; -- poi cambiamenti su show, create, storeTableRequest ANDARE PER VEDERE COMMENTI
         $slug = Str::slug($formData['title'], '-');
         $formData['slug'] = $slug;
         $userId = Auth::id();
@@ -71,6 +77,8 @@ class PostController extends Controller
      */
     public function update(UpdatePostRequest $request, Post $post)
     {
+        //dopo aver messo i comandi per l'image, serve eliminare la precedente
+
         $formData = $request->validated();
         $slug= Str::slug($formData['title'],'-');
         $formData['slug'] = $slug;
@@ -85,6 +93,9 @@ class PostController extends Controller
      */
     public function destroy(Post $post)
     {
+        if($post->image){
+            Storage::delete($post->image);
+        }
         $post->delite();
         return to_route('admin.posts.index')->with('message',"$post->title eliminato");
     }

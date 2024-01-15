@@ -23,6 +23,7 @@
                 @enderror
             </div>
 
+            {{-- TYPE FILE, PER INSERIRE IMG --}}
             <div class="mb-3">
                 <label for="image">img</label>
                 <input type="file" class="form-control @error('image') is-invalid @enderror" name="image" id="image">

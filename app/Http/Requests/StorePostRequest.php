@@ -26,7 +26,7 @@ class StorePostRequest extends FormRequest
         return [
             'title'=>['required', 'min:3', 'max:200', 'unique:posts', Rule::unique('posts')->ignore($this->post)],
             'body'=>['nullable'],
-            'image'=>['nullable','image']
+            'image'=>['nullable','image'], // 'image' PER INSERIRE IMMAGINI
         ];
     }
 
