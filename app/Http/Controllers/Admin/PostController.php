@@ -48,6 +48,7 @@ class PostController extends Controller
         // 2, su .env, cambiare filesistem_disk = 'public', (riga 20)
         // 3, php artisan storege:link
         // 4, aggiungere use Illuminate\Support\Facades\Storage; -- poi cambiamenti su show, create, storeTableRequest ANDARE PER VEDERE COMMENTI
+        //5, RICORDARE FILLABLEEEEEEEEEEEEEEEEE
         $slug = Str::slug($formData['title'], '-');
         $formData['slug'] = $slug;
         $userId = Auth::id();
@@ -93,6 +94,7 @@ class PostController extends Controller
      */
     public function destroy(Post $post)
     {
+        //rimuovi l'immagine dallo storage se viene eliminato il record
         if($post->image){
             Storage::delete($post->image);
         }

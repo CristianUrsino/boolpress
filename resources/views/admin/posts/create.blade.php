@@ -3,6 +3,7 @@
     <section class="container">
        <h1>post create</h1>
 
+       {{-- AGGIUNGERE ENCTYPE PER IMAGE --}}
        <form action="{{route('admin.posts.store')}}" method="POST" enctype="multipart/form-data">
 
             @csrf
